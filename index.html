@@ -90,7 +90,7 @@
     const chipInput = document.getElementById("chipnummer");
 
     chipInput.addEventListener("input", function () {
-      // Eingabe validieren
+      // Eingabe validieren: nur alphanumerisch, max 16 Zeichen
       chipInput.value = chipInput.value.replace(/[^0-9A-Za-z]/g, "").slice(0, 16);
     });
 
@@ -99,7 +99,7 @@
         event.preventDefault();
         const chipnummer = chipInput.value.trim();
 
-        if (chipnummer.length > 0) {
+        if (chipnummer.length === 16) {
           fetch(
             "https://prod-35.westeurope.logic.azure.com:443/workflows/68d87c166f6b4490b9fd2a5b2ad3cc22/triggers/manual/paths/invoke?api-version=2016-06-01",
             {
@@ -107,9 +107,7 @@
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({
-                chipnummer: chipnummer,
-              }),
+              body: JSON.stringify({ chipnummer: chipnummer }),
             }
           )
             .then((response) => {
@@ -128,7 +126,7 @@
               alert("Fehler beim Senden der Chipnummer.");
             });
         } else {
-          alert("Bitte eine gültige Chipnummer eingeben.");
+          alert("Bitte eine gültige 16-stellige Chipnummer eingeben.");
         }
       }
     });
