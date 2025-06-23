@@ -62,8 +62,8 @@
 
   <div class="section" id="eingabe">
     <h2>Eingabe</h2>
-    <label for="chipnummer">Chipnummer einlesen:</label>
-    <input type="text" id="chipnummer" maxlength="16" placeholder="16-stellige Nummer" />
+    <label for="chipnummer">Chipnummer eingeben:</label>
+    <input type="text" id="chipnummer" maxlength="16" placeholder="bis zu 16 Zeichen" />
   </div>
 
   <div class="section" id="ausgabe">
@@ -90,7 +90,7 @@
     const chipInput = document.getElementById("chipnummer");
 
     chipInput.addEventListener("input", function () {
-      // Eingabe validieren: nur alphanumerisch, max 16 Zeichen
+      // Nur alphanumerische Zeichen, maximal 16
       chipInput.value = chipInput.value.replace(/[^0-9A-Za-z]/g, "").slice(0, 16);
     });
 
@@ -99,17 +99,17 @@
         event.preventDefault();
         const chipnummer = chipInput.value.trim();
 
-        if (chipnummer.length === 16) {
-          fetch(
-            "https://prod-35.westeurope.logic.azure.com:443/workflows/68d87c166f6b4490b9fd2a5b2ad3cc22/triggers/manual/paths/invoke?api-version=2016-06-01",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ chipnummer: chipnummer }),
-            }
-          )
+        // Erlaubt 8–16 alphanumerische Zeichen
+        const valid = /^[0-9A-Za-z]{8,16}$/.test(chipnummer);
+
+        if (valid) {
+          fetch("https://prod-35.westeurope.logic.azure.com:443/workflows/68d87c166f6b4490b9fd2a5b2ad3cc22/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=rY7Zvwpc0EiCVmzhJJuBpp23sW_wEuC-JyTRoAHm8sU", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ chipnummer: chipnummer }),
+          })
             .then((response) => {
               if (!response.ok) {
                 throw new Error("Fehler beim Senden an Power Automate.");
@@ -126,7 +126,7 @@
               alert("Fehler beim Senden der Chipnummer.");
             });
         } else {
-          alert("Bitte eine gültige 16-stellige Chipnummer eingeben.");
+          alert("Bitte eine gültige Chipnummer mit 8–16 Zeichen eingeben.");
         }
       }
     });
