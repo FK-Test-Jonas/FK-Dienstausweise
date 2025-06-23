@@ -76,6 +76,16 @@
         <label for="nachname">Nachname:</label>
         <input type="text" id="nachname" readonly />
       </div>
+      <div class="ausgabe-felder">
+        <label for="personalnummer">Personalnummer:</label>
+        <input type="text" id="personalnummer" readonly />
+
+        <label for="abteilung">Abteilung:</label>
+        <input type="text" id="abteilung" readonly />
+
+        <label for="vorgesetzter">Vorgesetzter:</label>
+        <input type="text" id="vorgesetzter" readonly />
+      </div>
       <div class="ausgabe-bild">
         <img
           id="benutzerBild"
@@ -90,7 +100,6 @@
     const chipInput = document.getElementById("chipnummer");
 
     chipInput.addEventListener("input", function () {
-      // Nur alphanumerische Zeichen, maximal 16
       chipInput.value = chipInput.value.replace(/[^0-9A-Za-z]/g, "").slice(0, 16);
     });
 
@@ -99,7 +108,6 @@
         event.preventDefault();
         const chipnummer = chipInput.value.trim();
 
-        // Erlaubt 8–16 alphanumerische Zeichen
         const valid = /^[0-9A-Za-z]{8,16}$/.test(chipnummer);
 
         if (valid) {
@@ -123,6 +131,9 @@
               console.log("Antwort von Power Automate:", data);
               document.getElementById("vorname").value = data.vorname || "";
               document.getElementById("nachname").value = data.nachname || "";
+              document.getElementById("personalnummer").value = data.personalnummer || "";
+              document.getElementById("abteilung").value = data.abteilung || "";
+              document.getElementById("vorgesetzter").value = data.vorgesetzter || "";
             })
             .catch((error) => {
               console.error("Fehler beim Senden:", error);
