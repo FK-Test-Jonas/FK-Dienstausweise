@@ -103,6 +103,8 @@
         const valid = /^[0-9A-Za-z]{8,16}$/.test(chipnummer);
 
         if (valid) {
+          console.log("Sende Chipnummer an Power Automate:", chipnummer);
+
           fetch("https://prod-35.westeurope.logic.azure.com:443/workflows/68d87c166f6b4490b9fd2a5b2ad3cc22/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=rY7Zvwpc0EiCVmzhJJuBpp23sW_wEuC-JyTRoAHm8sU", {
             method: "POST",
             headers: {
@@ -111,8 +113,9 @@
             body: JSON.stringify({ chipnummer: chipnummer }),
           })
             .then((response) => {
+              console.log("Antwortstatus:", response.status);
               if (!response.ok) {
-                throw new Error("Fehler beim Senden an Power Automate.");
+                throw new Error("Fehler beim Senden an Power Automate. Status: " + response.status);
               }
               return response.json();
             })
@@ -122,8 +125,8 @@
               document.getElementById("nachname").value = data.nachname || "";
             })
             .catch((error) => {
-              console.error("Fehler:", error);
-              alert("Fehler beim Senden der Chipnummer.");
+              console.error("Fehler beim Senden:", error);
+              alert("Fehler beim Senden der Chipnummer:\n" + error.message);
             });
         } else {
           alert("Bitte eine gültige Chipnummer mit 8–16 Zeichen eingeben.");
